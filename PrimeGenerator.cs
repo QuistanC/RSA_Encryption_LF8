@@ -1,19 +1,38 @@
 ﻿
+using System.Numerics;
+
 namespace RSA_Encryption;
 
 internal class PrimeGenerator
 {
-    internal long[] GeneratePrimePair()
+    internal BigInteger[] GeneratePrimePair()
     {
-        var PrimeList = new List<long>();
+        var PrimeList = new List<BigInteger>();
         var random = new Random();
 
         while (PrimeList.Count < 2)
         {
-            var candidate = (long)random.NextDouble() * Math.Pow(10,10308);
-            PrimeList.Add(0);
+            var bytes = new Byte[128];
+            random.NextBytes(bytes);
+            var candidate = BitConverter.ToUInt128(bytes);
+            var parsedCandidate = Math.Abs((long)candidate % ((long)Math.Pow(10,19)) + (long)Math.Pow(10, 19)-1);
+            if (IsPrime(parsedCandidate))
+                PrimeList.Add(parsedCandidate);
         }
 
-        return [2, 3];
+        return [.. PrimeList];
+    }
+
+    private bool IsPrime(long candidate)
+    {
+        var border = (long)Math.Sqrt(candidate);
+
+        for (long i = 2; i < border + 1; i++)
+            if (candidate % i == 0)
+            { 
+                return false; 
+            }
+
+        return true;
     }
 }
