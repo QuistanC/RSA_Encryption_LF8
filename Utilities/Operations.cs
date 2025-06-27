@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -10,42 +11,60 @@ namespace RSA_Encryption.Utilities;
 
 public class Operations
 {
-    public static long generateModulus(long primeOne, long primeTwo)
+    public static BigInteger GenerateModulus(BigInteger primeOne, BigInteger primeTwo)
     {
         return primeTwo * primeOne;
     }
 
-    public static long generateEulers(long primeOne, long primeTwo)
+    public static BigInteger GenerateEulers(BigInteger primeOne, BigInteger primeTwo)
     {
         return (primeOne-1)*(primeTwo-1);
     }
 
-    public static long generatePrivateKey(long publicKey, long eulers)
+    public static BigInteger GeneratePrivateKey(BigInteger publicKey, BigInteger eulers)
     {
-        return publicKey * eulers; //TEMP
+        throw new NotImplementedException();
     }
 
-    private static long findGreatestCommonDividor(long primeOne, long primeTwo)
+    private static BigInteger FindGreatestCommonDivisor(BigInteger primeOne, BigInteger primeTwo)
     {
-        if (primeOne == 0 || primeTwo == 0)
-            return 0;
-
-        if(primeOne == primeTwo)
+        while(primeTwo != 0)
         {
-            return primeOne;
+            BigInteger temp = primeTwo;
+            primeTwo = primeOne % primeTwo;
+            primeOne = temp;
         }
 
-        if (primeOne > primeTwo)
+        return BigInteger.Abs(primeOne);
+    }
+
+    public static BigInteger ModInverse(BigInteger publicExponent, BigInteger totient)
+    {
+        if (totient <= 0)
+            throw new ArgumentException("Totient must be positive.", nameof(totient));
+
+        if (FindGreatestCommonDivisor(publicExponent, totient) != 1)
+            throw new InvalidOperationException("e und φ(n) sind nicht teilerfremd.");
+
+        BigInteger d = 0, newT = 1;
+        BigInteger r = totient, newR = publicExponent;
+
+        while (newR != 0)
         {
-            return findGreatestCommonDividor(primeOne-primeTwo, primeTwo);
+            BigInteger q = r / newR;
+            (d, newT) = (newT, d - q * newT);
+            (r, newR) = (newR, r - q * newR);
         }
 
-        return findGreatestCommonDividor(primeOne, primeTwo-primeOne);
+        if (d < 0) d += totient;
+        return d;
     }
 
-    private static bool checkIfPrime(long primeOne, long primeTwo)
+    private static bool checkIfPrime(BigInteger primeOne, BigInteger primeTwo)
     {
-        return findGreatestCommonDividor(primeOne, primeTwo) == 1;
+        return FindGreatestCommonDivisor(primeOne, primeTwo) == 1;
     }
+
+   
 
 }
