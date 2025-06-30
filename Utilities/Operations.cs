@@ -26,16 +26,32 @@ public class Operations
         throw new NotImplementedException();
     }
 
-    private static BigInteger FindGreatestCommonDivisor(BigInteger primeOne, BigInteger primeTwo)
+    public static BigInteger FindGreatestCommonDivisor(BigInteger primeOne, BigInteger primeTwo)
     {
-        while(primeTwo != 0)
+        if (primeOne > primeTwo)
         {
-            BigInteger temp = primeTwo;
-            primeTwo = primeOne % primeTwo;
-            primeOne = temp;
+            while (primeTwo != 0)
+            {
+                BigInteger temp = primeTwo;
+                primeTwo = primeOne % primeTwo;
+                primeOne = temp;
+            }
+
+            return BigInteger.Abs(primeOne);
+        }
+        else if (primeOne < primeTwo)
+        {
+            while (primeOne != 0)
+            {
+                BigInteger temp = primeOne;
+                primeOne = primeTwo % primeOne;
+                primeTwo = temp;
+            }
+            return BigInteger.Abs(primeTwo);
         }
 
-        return BigInteger.Abs(primeOne);
+        else return primeOne;
+
     }
 
     public static BigInteger ModInverse(BigInteger publicExponent, BigInteger totient)
