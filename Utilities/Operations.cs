@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace RSA_Encryption.Utilities;
 
-public class Operations
+public static class Operations
 {
     public static BigInteger GenerateModulus(BigInteger primeOne, BigInteger primeTwo)
     {
@@ -20,13 +13,24 @@ public class Operations
     {
         return (primeOne-1)*(primeTwo-1);
     }
+    public static BigInteger GenerateCarmichaels(BigInteger primeOne, BigInteger primeTwo) => FindLowestCommonMultiple(primeOne - 1, primeTwo - 1);
 
-    public static BigInteger GeneratePrivateKey(BigInteger publicKey, BigInteger eulers)
+    //viel zu langsam, müssen sinnvollen algorithmus implementieren
+    public static BigInteger GeneratePrivateKey(BigInteger e, BigInteger carmichaels)
     {
-        throw new NotImplementedException();
+        var d = new BigInteger(1);
+
+        while ((d * e) % carmichaels != 1)
+        { 
+            d++;
+            if (d >= carmichaels)
+                return -1;
+        }
+
+        return d;
     }
 
-    public static BigInteger FindGreatestCommonDivisor(BigInteger primeOne, BigInteger primeTwo)
+    public static BigInteger FindGreatestCommonDenominator(BigInteger primeOne, BigInteger primeTwo)
     {
         if (primeOne > primeTwo)
         {
@@ -39,7 +43,7 @@ public class Operations
 
             return BigInteger.Abs(primeOne);
         }
-        else if (primeOne < primeTwo)
+        if (primeOne < primeTwo)
         {
             while (primeOne != 0)
             {
@@ -50,16 +54,18 @@ public class Operations
             return BigInteger.Abs(primeTwo);
         }
 
-        else return primeOne;
+        return primeOne;
 
     }
+    public static BigInteger FindLowestCommonMultiple(BigInteger n1, BigInteger n2) => n1 * n2 / FindGreatestCommonDenominator(n1, n2);
+    
 
     public static BigInteger ModInverse(BigInteger publicExponent, BigInteger totient)
     {
         if (totient <= 0)
             throw new ArgumentException("Totient must be positive.", nameof(totient));
 
-        if (FindGreatestCommonDivisor(publicExponent, totient) != 1)
+        if (FindGreatestCommonDenominator(publicExponent, totient) != 1)
             throw new InvalidOperationException("e und φ(n) sind nicht teilerfremd.");
 
         BigInteger d = 0, newT = 1;
@@ -78,7 +84,7 @@ public class Operations
 
     private static bool checkIfPrime(BigInteger primeOne, BigInteger primeTwo)
     {
-        return FindGreatestCommonDivisor(primeOne, primeTwo) == 1;
+        return FindGreatestCommonDenominator(primeOne, primeTwo) == 1;
     }
 
    
