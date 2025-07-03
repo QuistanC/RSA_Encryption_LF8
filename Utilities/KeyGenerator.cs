@@ -25,7 +25,7 @@ public static class KeyGenerator
         Console.WriteLine("Generating e...");
         var e = new BigInteger(2);
 
-        while(Operations.FindGreatestCommonDenominator(e, carmichaels) != 1)
+        while(Operations.FindGreatestCommonDivisor(e, carmichaels) != 1)
         {
             e++;
             if (e == carmichaels)

@@ -30,7 +30,7 @@ public static class Operations
         return d;
     }
 
-    public static BigInteger FindGreatestCommonDenominator(BigInteger primeOne, BigInteger primeTwo)
+    public static BigInteger FindGreatestCommonDivisor(BigInteger primeOne, BigInteger primeTwo)
     {
         if (primeOne > primeTwo)
         {
@@ -57,7 +57,7 @@ public static class Operations
         return primeOne;
 
     }
-    public static BigInteger FindLowestCommonMultiple(BigInteger n1, BigInteger n2) => n1 * n2 / FindGreatestCommonDenominator(n1, n2);
+    public static BigInteger FindLowestCommonMultiple(BigInteger n1, BigInteger n2) => n1 * n2 / FindGreatestCommonDivisor(n1, n2);
     
 
     public static BigInteger ModInverse(BigInteger publicExponent, BigInteger totient)
@@ -65,7 +65,7 @@ public static class Operations
         if (totient <= 0)
             throw new ArgumentException("Totient must be positive.", nameof(totient));
 
-        if (FindGreatestCommonDenominator(publicExponent, totient) != 1)
+        if (FindGreatestCommonDivisor(publicExponent, totient) != 1)
             throw new InvalidOperationException("e und φ(n) sind nicht teilerfremd.");
 
         BigInteger d = 0, newT = 1;
@@ -84,7 +84,7 @@ public static class Operations
 
     private static bool checkIfPrime(BigInteger primeOne, BigInteger primeTwo)
     {
-        return FindGreatestCommonDenominator(primeOne, primeTwo) == 1;
+        return FindGreatestCommonDivisor(primeOne, primeTwo) == 1;
     }
 
    
