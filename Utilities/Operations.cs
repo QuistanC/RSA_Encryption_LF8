@@ -76,10 +76,7 @@ public class Operations
         return d;
     }
 
-    private static bool checkIfPrime(BigInteger primeOne, BigInteger primeTwo)
-    {
-        return FindGreatestCommonDivisor(primeOne, primeTwo) == 1;
-    }
+    
 
    
 
