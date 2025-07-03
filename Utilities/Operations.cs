@@ -18,8 +18,11 @@ public static class Operations
     //viel zu langsam, müssen sinnvollen algorithmus implementieren
     public static BigInteger GeneratePrivateKey(BigInteger e, BigInteger carmichaels)
     {
-        var extendedAlgoSols = ExtendedEuclideanAlgorithm(e, carmichaels);
-        var d = extendedAlgoSols.First();
+        var (gcd, x, y) = ExtendedEuclideanAlgorithmRec(e, carmichaels);
+        if (gcd != 1)
+            throw new Exception("e and λ(n) are not coprime");
+        BigInteger d = x % carmichaels;
+        if (d < 0) d += carmichaels;
         while (d <= 0)
         {
             d += carmichaels;
@@ -29,21 +32,24 @@ public static class Operations
         return d;
     }
     // Returns [s, t, r] such that s*a + t*b == gcd(a,b) == r
-    private static IEnumerable<BigInteger> ExtendedEuclideanAlgorithm(BigInteger a, BigInteger b) => ExtendedEuclideanAlgorithmRec([a,b], [1,0], [0,1]);
-    private static IEnumerable<BigInteger> ExtendedEuclideanAlgorithmRec(List<BigInteger> r, List<BigInteger> s, List<BigInteger> t)
+    //private static IEnumerable<BigInteger> ExtendedEuclideanAlgorithm(BigInteger a, BigInteger b) => ExtendedEuclideanAlgorithmRec([a,b], [1,0], [0,1]);
+    private static (BigInteger gcd, BigInteger x, BigInteger y) ExtendedEuclideanAlgorithmRec(BigInteger a, BigInteger b)
     {
-        if (r.Count != s.Count || s.Count != t.Count)
-            throw new ArgumentException("Lists should be same length");
-        var currentI = r.Count - 1;
-        var q = r[currentI - 1] / r[currentI];
-        r.Add(r[currentI - 1] - q * r[currentI]);
-        s.Add(s[currentI - 1] - q * s[currentI]);
-        t.Add(t[currentI - 1] - q * t[currentI]);
+        BigInteger oldR = a, r = b;
+        BigInteger oldS = 1, s = 0;
+        BigInteger oldT = 0, t = 1;
 
-        if (r.Last() == 0)
-            return [s[currentI], t[currentI], r[currentI]];
+        while (r != 0)
+        {
+            BigInteger quotient = oldR / r;
 
-        return ExtendedEuclideanAlgorithmRec(r, s, t);
+            (oldR, r) = (r, oldR - quotient * r);
+            (oldS, s) = (s, oldS - quotient * s);
+            (oldT, t) = (t, oldT - quotient * t);
+        }
+
+        // oldR is gcd, oldS and oldT are Bézout coefficients
+        return (oldR, oldS, oldT);
     }
     public static BigInteger FindGreatestCommonDivisor(BigInteger primeOne, BigInteger primeTwo)
     {

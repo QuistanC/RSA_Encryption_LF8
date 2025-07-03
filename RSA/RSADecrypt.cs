@@ -1,4 +1,5 @@
 ﻿
+using RSA_Encryption.Utilities;
 using System.Numerics;
 using System.Text;
 
@@ -8,43 +9,41 @@ internal class RSADecrypt(BigInteger d, BigInteger n)
 {
     private BigInteger D = d;
     private BigInteger N = n;
-    private int blockSize;
-    internal string Decrypt(byte[] input)
+    private int blockCipher;
+    internal string Decrypt(byte[] cipher)
     {
-        blockSize = (int)(n.GetBitLength() + 7) / 8;
+        blockCipher = (int)(n.GetBitLength() + 7) / 8;
         using var ms = new MemoryStream();
 
-        for (int i = 0; i < input.Length; i += blockSize)
+        for (int i = 0; i < cipher.Length; i += blockCipher)
         {
-            int len = Math.Min(blockSize, input.Length - i);
-            byte[] block = new byte[len];
-            Buffer.BlockCopy(input, i, block, 0, len);
+            byte[] block = new byte[blockCipher];
+            Buffer.BlockCopy(cipher, i, block, 0, blockCipher);
 
-            byte[] blockLE = new byte[len + 1];
-            for (int j = 0; j < len; j++)
-            {
-                blockLE[j] = block[len - 1 - j];
-            }
-            blockLE[len] = 0;
-
-            BigInteger c = new BigInteger(blockLE);
-
+            BigInteger c = new BigInteger(block.Reverse().Append((byte)0).ToArray());
             BigInteger m = BigInteger.ModPow(c, D, N);
 
-            byte[] plainLE = m.ToByteArray();
+            byte[] le = m.ToByteArray();
+            if (le.Length > 1 && le[^1] == 0)
+                le = le[..^1];
+            byte[] be = le.Reverse().ToArray();
+            if (be.Length < blockCipher)                 
+            {
+                byte[] tmp = new byte[blockCipher];
+                Buffer.BlockCopy(be, 0, tmp,
+                                 blockCipher - be.Length,
+                                 be.Length);
+                be = tmp;
+            }
+            byte[] slice = RsaHelpersPadding.UnpadBlock(be);
 
-            if (plainLE.Length > 1 && plainLE[^1] == 0)
-                plainLE = plainLE[..^1];
-
-            byte[] plainBE = plainLE.Reverse().ToArray();
-
-            ms.Write(plainBE);
+            ms.Write(slice);
         }
-        return DecodeBytes(ms.ToArray());
+        return Encoding.UTF8.GetString(ms.ToArray());
     }
 
     private string DecodeBytes(byte[] decryptedText)
     {
-        return Encoding.UTF8.GetString(decryptedText);
+        return Encoding.Unicode.GetString(decryptedText);
     }
 }
