@@ -39,6 +39,10 @@ public static class KeyGenerator
             throw new Exception("cannot generate d");
         Console.WriteLine($"Found d = {d}");
 
+        Console.WriteLine(n);
+        Console.WriteLine(e);
+        Console.WriteLine(d);
+
         return new(n,e,d);
     }
 }
