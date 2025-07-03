@@ -1,5 +1,6 @@
 ﻿using RSA_Encryption;
 using RSA_Encryption.models;
+using RSA_Encryption.RSA;
 using RSA_Encryption.Utilities;
 using System.Diagnostics;
 
@@ -20,4 +21,10 @@ using System.Diagnostics;
 
 var keys = KeyGenerator.Generate();
 
-Console.WriteLine($"Keyset: e = {keys.E}, d = {keys.D}, n = {keys.N}");
+RSAEncrypt encrypt = new(keys.N, keys.E);
+
+var test = encrypt.Encrypt("C:\\Users\\Lisa.Kortkamp\\Documents\\Test.txt");
+
+Console.Write(test);
+
+//Console.WriteLine($"Keyset: e = {keys.E}, d = {keys.D}, n = {keys.N}");
