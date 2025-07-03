@@ -1,5 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-using RSA_Encryption;
+﻿using RSA_Encryption;
+using RSA_Encryption.models;
 using RSA_Encryption.Utilities;
 using System.Diagnostics;
 
@@ -12,8 +12,12 @@ using System.Diagnostics;
 
 //Console.WriteLine($"{test[0]}, {test[1]} found in {timer.ElapsedMilliseconds}ms");
 
-var numOne = 3;
-var numTwo = 11;
-var testGCD = Operations.FindGreatestCommonDivisor(numOne, numTwo);
+//var numOne = 3;
+//var numTwo = 11;
+//var testGCD = Operations.FindGreatestCommonDenominator(numOne, numTwo);
 
-Console.WriteLine($"GCD for {numOne} and {numTwo} is {testGCD}");
+//Console.WriteLine($"GCD for {numOne} and {numTwo} is {testGCD}");
+
+var keys = KeyGenerator.Generate();
+
+Console.WriteLine($"Keyset: e = {keys.E}, d = {keys.D}, n = {keys.N}");
