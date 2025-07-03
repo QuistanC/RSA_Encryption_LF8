@@ -9,10 +9,9 @@ internal class RSAEncrypt(BigInteger n, BigInteger e)
 {
     private BigInteger N = n;
     private BigInteger E = e;
-    internal byte[] Encrypt(string filePath)
+    internal byte[] Encrypt()
     {
-        byte[] convertedData = ConvertFile(filePath);
-        using var fout = new FileStream("cipher.bin", FileMode.Create);
+        byte[] convertedData = Encoding.UTF8.GetBytes("hi! This is a test string.");
         int blockSize = ((int)N.GetBitLength() - 1) / 8;
         int rawTextByteSize = ((int)N.GetBitLength() + 7) / 8;
         using var ms = new MemoryStream();
@@ -34,7 +33,7 @@ internal class RSAEncrypt(BigInteger n, BigInteger e)
             byte[] block = new byte[rawTextByteSize];
             Buffer.BlockCopy(raw, 0, block, rawTextByteSize - raw.Length, raw.Length);
 
-            fout.Write(block);
+            ms.Write(block);
         }
 
         byte[] cipherBytes = ms.ToArray();
@@ -48,6 +47,6 @@ internal class RSAEncrypt(BigInteger n, BigInteger e)
     {
         string data = FileReader.ReadFile(filePath);
 
-        return Encoding.UTF8.GetBytes(data);
+        return Encoding.UTF8.GetBytes("hi! This is a test string.");
     }
 }

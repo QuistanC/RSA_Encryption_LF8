@@ -22,9 +22,15 @@ using System.Diagnostics;
 var keys = KeyGenerator.Generate();
 
 RSAEncrypt encrypt = new(keys.N, keys.E);
+RSADecrypt decrypt = new(keys.D, keys.N);
 
-var test = encrypt.Encrypt("C:\\Users\\Lisa.Kortkamp\\Documents\\Test.txt");
+var test = encrypt.Encrypt();
 
-Console.Write(test);
+Console.WriteLine(test);
+
+var decryptTest = decrypt.Decrypt(test);
+
+Console.WriteLine(decryptTest);
+
 
 //Console.WriteLine($"Keyset: e = {keys.E}, d = {keys.D}, n = {keys.N}");
