@@ -25,7 +25,7 @@ public static class KeyGenerator
         Console.WriteLine("Generating e...");
         var e = new BigInteger(2);
 
-        while(Operations.FindGreatestCommonDenominator(e, carmichaels) != 1)
+        while(Operations.FindGreatestCommonDivisor(e, carmichaels) != 1)
         {
             e++;
             if (e == carmichaels)
@@ -38,6 +38,10 @@ public static class KeyGenerator
         if (d <= 0)
             throw new Exception("cannot generate d");
         Console.WriteLine($"Found d = {d}");
+
+        Console.WriteLine(n);
+        Console.WriteLine(e);
+        Console.WriteLine(d);
 
         return new(n,e,d);
     }
