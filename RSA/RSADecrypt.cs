@@ -41,9 +41,4 @@ internal class RSADecrypt(BigInteger d, BigInteger n)
         }
         return Encoding.UTF8.GetString(ms.ToArray());
     }
-
-    private string DecodeBytes(byte[] decryptedText)
-    {
-        return Encoding.Unicode.GetString(decryptedText);
-    }
 }

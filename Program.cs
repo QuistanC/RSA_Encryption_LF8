@@ -1,36 +1,20 @@
-﻿using RSA_Encryption;
-using RSA_Encryption.models;
-using RSA_Encryption.RSA;
+﻿using RSA_Encryption.RSA;
 using RSA_Encryption.Utilities;
-using System.Diagnostics;
-
-
-//var timer = new Stopwatch();
-
-//timer.Start();
-//var test = new PrimeGenerator().GeneratePrimePair();
-//timer.Stop();
-
-//Console.WriteLine($"{test[0]}, {test[1]} found in {timer.ElapsedMilliseconds}ms");
-
-//var numOne = 3;
-//var numTwo = 11;
-//var testGCD = Operations.FindGreatestCommonDenominator(numOne, numTwo);
-
-//Console.WriteLine($"GCD for {numOne} and {numTwo} is {testGCD}");
 
 var keys = KeyGenerator.Generate();
 
 RSAEncrypt encrypt = new(keys.N, keys.E);
 RSADecrypt decrypt = new(keys.D, keys.N);
 
-var test = encrypt.Encrypt();
+Console.WriteLine("Input message to encode:");
+var input = Console.ReadLine();
+var test = encrypt.Encrypt(input ?? "dummy message");
 
-Console.WriteLine(test);
+Console.Write("Encrypted to:\t");
+foreach (var entry in test)
+    Console.Write($"{entry}\t");
+Console.WriteLine();
 
 var decryptTest = decrypt.Decrypt(test);
 
-Console.WriteLine(decryptTest);
-
-
-//Console.WriteLine($"Keyset: e = {keys.E}, d = {keys.D}, n = {keys.N}");
+Console.WriteLine($"decrypted to {decryptTest}");

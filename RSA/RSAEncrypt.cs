@@ -11,12 +11,12 @@ internal class RSAEncrypt(BigInteger n, BigInteger e)
     private BigInteger E = e;
     private int blockPlain;
     private int blockCipher;
-    internal byte[] Encrypt()
+    internal byte[] Encrypt(string toEncrypt)
     {
         
         blockCipher = (int)(N.GetBitLength() + 7) / 8;
         blockPlain = blockCipher - 11;
-        byte[] convertedData = Encoding.UTF8.GetBytes("hi! This is a test string.");
+        byte[] convertedData = Encoding.UTF8.GetBytes(toEncrypt);
         using var ms = new MemoryStream();
 
         for (int i = 0; i < convertedData.Length; i += blockPlain)
