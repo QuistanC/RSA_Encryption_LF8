@@ -8,7 +8,7 @@ RSAEncrypt encrypt = new(keys.N, keys.E);
 RSADecrypt decrypt = new(keys.D, keys.N);
 
 Console.WriteLine("Do you want to encode a file or a single sentence?");
-Console.WriteLine("1. Single sentence \n 2. File");
+Console.WriteLine("1. Single sentence\n 2. File");
 var choice = Console.ReadLine();
 
 if (choice == "1")
